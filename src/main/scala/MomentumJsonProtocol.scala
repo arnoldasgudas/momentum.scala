@@ -44,7 +44,7 @@ object MomentumJsonProtocol extends DefaultJsonProtocol {
     def read(json: JsValue): YahooFinanceQuote = json match {
       case JsObject(fields)
         if fields.isDefinedAt("Date") =>
-        YahooFinanceQuote(fields("Symbol").convertTo[YahooFinanceSymbol], fields("Date").convertTo[Date], "", "", "", "", "", "")
+        YahooFinanceQuote(fields("Symbol").convertTo[YahooFinanceSymbol], fields("Date").convertTo[Date], fields("Adj_Close").toString)
     }
   }
 

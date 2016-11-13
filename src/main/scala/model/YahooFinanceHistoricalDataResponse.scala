@@ -1,3 +1,3 @@
 package model
 
-case class YahooFinanceHistoricalDataResponse(count: Int, created: String, lang: String, results: YahooFinanceHistoricalDataWrapper)
+case class YahooFinanceHistoricalDataResponse(count: Int, created: String, lang: String, results: Option[YahooFinanceHistoricalDataWrapper])

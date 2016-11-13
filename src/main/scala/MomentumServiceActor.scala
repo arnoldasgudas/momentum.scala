@@ -6,6 +6,7 @@ import spray.http.MediaTypes._
 import spray.routing._
 import spray.json._
 import MomentumJsonProtocol._
+import model.YahooFinanceSymbol.YahooFinanceSymbol
 
 class MomentumServiceActor extends Actor with HttpService{
   def receive = runRoute(momentumRoute)
@@ -17,19 +18,20 @@ class MomentumServiceActor extends Actor with HttpService{
       get{
         respondWithMediaType(`application/json`) {
           complete {
-            val service = new YahooFinanceService
-            val momentumService = new MomentumService
-
             //todo: pass dates
-            val startDate = new DateTime("2016-04-04")
-            val endDate = new DateTime("2016-04-08")
+            val startDate = new DateTime("2015-07-01")
+            val endDate = new DateTime("2016-09-30")
+            val tickers = List(YahooFinanceSymbol.GLD, YahooFinanceSymbol.VNQ)
 
-            val prices = momentumService
-              .endOfMonthQuotes(
-                service.getHistoricalQuotes(
-                  List(YahooFinanceSymbol.GLD, YahooFinanceSymbol.VNQ), startDate, endDate)
-                  .map(_.toMomentumQuote))
-            prices.toJson.toString()
+            val momentums = MomentumService.calculateMomentum(
+              MomentumService.endOfMonthQuotes(
+                tickers.flatten(
+                  YahooFinanceService.getHistoricalQuotes(_, startDate, endDate)
+                    //todo: do we really need map?
+                    .map(_.toMomentumQuote))
+                ))
+            //todo: sort momentums
+            momentums.toJson.toString()
           }
         }
       }
