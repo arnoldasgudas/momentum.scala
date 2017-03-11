@@ -1,6 +1,6 @@
 import java.text.SimpleDateFormat
 
-import model.{MomentumQuote, YahooConstants, YahooFinanceQuote, YahooFinanceSymbol}
+import model._
 import services.MomentumService
 import org.scalatest.Matchers._
 
@@ -51,7 +51,7 @@ class MomentumServiceTests extends UnitSpec{
           MomentumQuote(YahooFinanceSymbol.GLD, formatter.parse("2015-07-31"), 104.9),
           MomentumQuote(YahooFinanceSymbol.GLD, formatter.parse("2015-06-30"), 112.4)))
 
-    actual should equal (List(Map(YahooFinanceSymbol.GLD -> 5.68)))
+    actual should equal (List(MomentumResponse(YahooFinanceSymbol.GLD, 5.68)))
   }
 
   test("calculateMomentum should add one, three, six, nine and twelve month momentum for multiple tickers"){
@@ -88,6 +88,6 @@ class MomentumServiceTests extends UnitSpec{
           MomentumQuote(YahooFinanceSymbol.VNQ, formatter.parse("2015-07-31"), 75.6),
           MomentumQuote(YahooFinanceSymbol.VNQ, formatter.parse("2015-06-30"), 71.5)))
 
-    actual should equal (List(Map(YahooFinanceSymbol.VNQ -> 5.82),Map(YahooFinanceSymbol.GLD -> 5.68)))
+    actual should equal (List(MomentumResponse(YahooFinanceSymbol.VNQ, 5.82),MomentumResponse(YahooFinanceSymbol.GLD, 5.68)))
   }
 }
