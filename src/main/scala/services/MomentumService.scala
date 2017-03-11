@@ -1,8 +1,7 @@
 package services
 import java.util.Date
 
-import model.MomentumQuote
-import model.YahooFinanceSymbol.YahooFinanceSymbol
+import model.{MomentumQuote, MomentumResponse}
 
 object MomentumService {
   def endOfMonthQuotes(quotes : List[MomentumQuote]) : List[MomentumQuote] = {
@@ -12,7 +11,7 @@ object MomentumService {
       .toList
   }
 
-  def calculateMomentum(quotes: List[MomentumQuote]) : List[Map[YahooFinanceSymbol, BigDecimal]] = {
+  def calculateMomentum(quotes: List[MomentumQuote]) : List[MomentumResponse] = {
     val orderedQuotes = quotes.sortBy(_.Date)(Ordering[Date].reverse)
     orderedQuotes.groupBy(_.Symbol).map(q=>{
       val groupedQuotes = q._2
@@ -21,6 +20,6 @@ object MomentumService {
         .map(groupedQuotes.head.AdjustedClose / groupedQuotes(_).AdjustedClose)
         .sum
         .setScale(2, BigDecimal.RoundingMode.HALF_UP))
-    }).toList
+    }).flatten(m => m).map(t => MomentumResponse(t._1, t._2)).toList.sortBy(_.value).reverse
   }
 }

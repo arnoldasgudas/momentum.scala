@@ -1,9 +1,9 @@
 import java.text.SimpleDateFormat
 import java.util.Date
 
-import model.{MomentumQuote, YahooConstants, YahooFinanceQuote}
+import model.{MomentumQuote, MomentumResponse, YahooConstants, YahooFinanceQuote}
 import model.YahooFinanceSymbol.YahooFinanceSymbol
-import spray.json.{DefaultJsonProtocol, JsObject, JsString, JsValue, JsonFormat}
+import spray.json.{DefaultJsonProtocol, JsNumber, JsObject, JsString, JsValue, JsonFormat}
 
 object MomentumJsonProtocol extends DefaultJsonProtocol {
   implicit object YahooDateFormat extends JsonFormat[Date]{
@@ -65,6 +65,21 @@ object MomentumJsonProtocol extends DefaultJsonProtocol {
           fields("Symbol").convertTo[YahooFinanceSymbol],
           fields("Date").convertTo[Date],
           BigDecimal(fields("AdjustedClose").convertTo[String]))
+    }
+  }
+
+  implicit  object MomentumResponseFormat extends JsonFormat[MomentumResponse] {
+    def write(obj: MomentumResponse) : JsValue = {
+      JsObject(
+        ("Symbol", JsString(obj.symbol.toString)),
+        ("Value", JsNumber(obj.value))
+      )
+    }
+
+    def read(json: JsValue): MomentumResponse = json match {
+      case JsObject(fields)
+        if fields.isDefinedAt("Symbol") =>
+          MomentumResponse(fields("Symbol").convertTo[YahooFinanceSymbol],fields("Value").convertTo[BigDecimal])
     }
   }
 }
