@@ -1,5 +1,3 @@
-import java.util.Calendar
-
 import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import akka.pattern.ask
